@@ -1,0 +1,26 @@
+---
+- name: Health check consul
+  uri:
+    url: 'http://localhost:{{ consul_http_port }}/v1/health/state/:state'
+    status_code: 200
+    timeout: 5
+    return_content: true
+  register: consul_members
+  retries: 10
+  delay: 1
+  until: consul_members.status == 200
+
+- when: "'consul_server' in group_names"
+  block:
+    - name: Get raft members
+      uri:
+        url: 'http://localhost:{{ consul_http_port }}/v1/status/peers'
+        status_code: 200
+        timeout: 5
+        return_content: true
+      register: consul_peers
+
+    - name: Assert server in raft peers
+      assert:
+        that:
+          - "'{{ consul_bind }}:{{ consul_server_port }}' in consul_peers.json"

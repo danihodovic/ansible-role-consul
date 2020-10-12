@@ -1,0 +1,18 @@
+---
+- name: Find the retry_join address
+  run_once: true
+  set_fact:
+    consul_retry_join: >-
+      {{ ansible_all_ipv4_addresses | ipaddr(consul_bind_network_range) | first }}
+
+- name: Set facts
+  set_fact:
+    consul_bind: >-
+      {{ ansible_all_ipv4_addresses | ipaddr(consul_bind_network_range) | first }}
+    consul_num_servers: '{{ groups.consul_server | length }}'
+
+- name: Assertions
+  assert:
+    that:
+      - 'consul_bind_network_range is defined'
+      - '(consul_num_servers|int) >= 3'

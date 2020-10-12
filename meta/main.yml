@@ -1,0 +1,9 @@
+---
+galaxy_info:
+  author: Dani Hodovic
+  description: An Ansible role that deploys consul as docker containers
+  company: Depode LTD (https://depode.com)
+  license: MIT
+  min_ansible_version: 2.9
+  galaxy_tags: [consul, service-discovery, docker, configuration, dns]
+dependencies: []

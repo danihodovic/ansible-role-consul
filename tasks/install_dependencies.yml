@@ -1,0 +1,9 @@
+---
+- name: Install pip3
+  apt:
+    name: python3-pip
+    update_cache: true
+
+- name: Install pip deps
+  pip:
+    name: docker

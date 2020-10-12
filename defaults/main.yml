@@ -1,0 +1,25 @@
+---
+consul_image: consul:latest
+consul_container_name: consul
+consul_data_dir: '/opt/consul'
+consul_datacenter: dc-1
+consul_recursor: 1.1.1.1
+consul_dns_port: 8600
+consul_lan_port: 8301
+consul_wan_port: 8302
+consul_http_port: 8500
+consul_server_port: 8300
+consul_dnsmasq_nameservers:
+  - '/consul/127.0.0.1#{{ consul_dns_port }}'
+  # Public (Cloudflare, Google)
+  - '1.1.1.1'
+  - '1.0.0.1'
+  - '8.8.8.8'
+consul_dnsmasq_listen_address:
+  # Default host DNS
+  - '127.0.0.53'
+  # 172.17.0.1 is the default host IP from within the container. This
+  # ensures dnsmasq can resolve dns queries from inside containers
+  - '172.17.0.1'
+consul_memory: '{{ ansible_memory_mb.real.total * 0.1 }}m'
+consul_cpu: '{{ (1024 * 0.1) | int }}'

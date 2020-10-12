@@ -1,0 +1,42 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: digitalocean
+platforms:
+  - name: consul1
+    region: fra1
+    size: 2gb
+    image: ubuntu-20-04-x64
+    groups: [consul, consul_server]
+  - name: consul2
+    region: fra1
+    size: 2gb
+    image: ubuntu-20-04-x64
+    groups: [consul, consul_server]
+  - name: consul3
+    region: fra1
+    size: 2gb
+    image: ubuntu-20-04-x64
+    groups: [consul, consul_server]
+  - name: consul4
+    region: fra1
+    size: 2gb
+    image: ubuntu-20-04-x64
+    groups: [consul]
+  - name: consul5
+    region: fra1
+    size: 2gb
+    image: ubuntu-20-04-x64
+    groups: [consul]
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      stdout_callback: yaml
+  inventory:
+    group_vars:
+      consul:
+verifier:
+  name: testinfra
+  directory: ../../tests

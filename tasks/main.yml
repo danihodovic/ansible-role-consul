@@ -1,0 +1,10 @@
+---
+- include_tasks: asserts.yml
+
+- include_tasks: install_dependencies.yml
+
+- include_tasks: dnsmasq.yml
+
+- include_tasks: start_containers.yml
+
+- include_tasks: check_status.yml

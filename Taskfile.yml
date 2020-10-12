@@ -1,0 +1,8 @@
+---
+version: '3'
+
+tasks:
+  verify:
+    desc: Verify the setup
+    cmds:
+      - pytest -s --connection=ansible --ansible-inventory=~/.cache/molecule/ansible-role-consul/default/inventory/ansible_inventory.yml

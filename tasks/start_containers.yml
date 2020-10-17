@@ -14,12 +14,12 @@
     restart_policy: unless-stopped
     memory: '{{ consul_memory }}'
     cpu_shares: '{{ consul_cpu }}'
-    hostname: '{{ consul_hostname|default(consul_bind) }}'
+    hostname: '{{ consul_hostname|default(consul_ip) }}'
     user: root
     command: >-
       agent
       -ui
-      -bind {{ consul_bind }}
+      -bind {{ consul_ip }}
       -data-dir {{ consul_data_dir }}
       -datacenter {{ consul_datacenter }}
       -recursor {{ consul_recursor }}
@@ -35,9 +35,9 @@
       -bootstrap-expect {{ consul_num_servers }}
       {% endif %}
 
-      {% if consul_retry_join %}
-      -retry-join {{ consul_retry_join }}
-      {% endif %}
+      {% for ip in consul_retry_join_ips %}
+      -retry-join {{ ip }}
+      {% endfor %}
     env:
       CONSUL_ALLOW_PRIVILEGED_PORTS: 'true'
       CONSUL_DISABLE_PERM_MGMT: 'true'
@@ -53,6 +53,8 @@
     name: registrator
     restart_policy: unless-stopped
     network_mode: host
-    command: consul://{{ consul_bind }}:{{ consul_http_port }}
+    command: >-
+      -ip {{ consul_ip }}
+      consul://{{ consul_ip }}:{{ consul_http_port }}
     volumes:
       - '/var/run/docker.sock:/tmp/docker.sock'

@@ -1,5 +1,8 @@
 ![logo](./logo.png)
 
+--limit should work. Query any server you can contact
+mounting a conf dir and templating health checks should work
+
 # ansible-role-consul
 
 Deploys a consul cluster as containers.
@@ -26,10 +29,59 @@ Deploys a consul cluster as containers.
 
 ##### Deployment
 
-The deployment requires the docker daemon to be installed on each host.
+The deployment requires the docker daemon to be installed on each host since
+Consul runs as a container.
 
-- TODO: Inventory example
-- TODO: Playbook example
+The role will deploy server agents to any node inside the `consul_server` group
+and otherwise deploy a client to the remaining nodes. It is required that
+you specify **at least 3 server nodes** for high availablilty.
+
+Refer to the Consul [architecture docs](https://www.consul.io/docs/architecture) for a better overview.
+
+```yaml
+---
+all:
+  children:
+    web:
+      hosts:
+        web01:
+          ansible_host: 172.16.142.101
+        web02:
+          ansible_host: 172.16.142.102
+    db:
+      hosts:
+        db01:
+          ansible_host: 172.16.142.103
+    cache:
+      hosts:
+        cache01:
+          ansible_host: 172.16.142.104
+
+    consul_server:
+      hosts:
+        web02:
+        db01:
+        cache01:
+```
+
+Using the playbook below we will deploy a Consul server instance to `web02`,
+`db01`, `cache01`. Consul client will be deployed to the rest.
+
+**You have to specify what IP range consul will be listening on** (most likely
+your cloud private network). Consul will then find largest IP address listening
+on that network range `ansible_all_ipv4_addresses | ipaddr(consul_network_range) | max`.
+
+```yaml
+---
+- name: Deploy consul
+  hosts: all
+  tasks:
+    - name: Deploy consul
+      import_role:
+        name: ansible-role-consul
+      vars:
+        consul_network_range: '172.16.142.0/24'
+```
 
 ##### DNS resolution from within Docker containers
 

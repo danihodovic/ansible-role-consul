@@ -1,8 +1,5 @@
 ![logo](./logo.png)
 
---limit should work. Query any server you can contact
-mounting a conf dir and templating health checks should work
-
 # ansible-role-consul
 
 Deploys a consul cluster as containers.

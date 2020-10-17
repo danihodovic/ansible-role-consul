@@ -1,0 +1,9 @@
+---
+- name: Deploy consul
+  hosts: all
+  tasks:
+    - name: Deploy consul
+      import_role:
+        name: ansible-role-consul
+      vars:
+        consul_network_range: '172.16.142.0/24'

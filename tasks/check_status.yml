@@ -23,4 +23,4 @@
     - name: Assert server in raft peers
       assert:
         that:
-          - "'{{ consul_bind }}:{{ consul_server_port }}' in consul_peers.json"
+          - "'{{ consul_ip }}:{{ consul_server_port }}' in consul_peers.json"

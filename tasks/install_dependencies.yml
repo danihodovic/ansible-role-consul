@@ -6,4 +6,4 @@
 
 - name: Install pip deps
   pip:
-    name: docker
+    name: [docker, python-consul]

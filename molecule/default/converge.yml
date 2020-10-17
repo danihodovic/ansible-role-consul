@@ -1,13 +1,25 @@
 ---
-- name: Converge
+- name: Deploy consul servers
+  hosts: consul_server
+  tasks:
+    - name: Include ansible-role-consul
+      include_role:
+        name: ansible-role-consul
+      vars:
+        consul_network_range: '10.114.0.0/16'
+
+- name: Deploy consul clients
   hosts: consul
   tasks:
     - name: Include ansible-role-consul
       include_role:
         name: ansible-role-consul
       vars:
-        consul_bind_network_range: '10.114.0.0/16'
+        consul_network_range: '10.114.0.0/16'
 
+- name: Deploy echo service
+  hosts: '{{ groups.consul | last }}'
+  tasks:
     - name: Deploy echo service
       run_once: true
       docker_container:

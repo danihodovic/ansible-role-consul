@@ -1,0 +1,32 @@
+---
+# TODO: Create config dir
+- name: Assert that we have either the network interface or a range
+  assert:
+    that:
+      - consul_network_range is defined
+
+- name: Find the number of servers
+  set_fact:
+    consul_num_servers: '{{ groups.consul_server | length }}'
+
+- name: Assertions we have the minimum number of servers
+  assert:
+    that:
+      - '(consul_num_servers|int) >= 3'
+
+- name: Gather server facts
+  setup:
+  delegate_to: '{{ item }}'
+  delegate_facts: true
+  loop: '{{ groups.consul_server }}'
+
+- name: Get server join addresses
+  set_fact:
+    consul_retry_join_ips: >-
+      {{ consul_retry_join_ips }} + ['{{ hostvars[item].ansible_all_ipv4_addresses | ipaddr(consul_network_range) | max }}']
+  loop: '{{ groups.consul_server }}'
+  run_once: true
+
+- name: Get consul IP
+  set_fact:
+    consul_ip: '{{ ansible_all_ipv4_addresses | ipaddr(consul_network_range) | max }}'

@@ -38,9 +38,9 @@
 
         - name: Delete remote keypair
           community.digitalocean.digital_ocean_sshkey:
-            fingerprint: "{{ item.remote_keypair_id }}"
+            fingerprint: "{{ instance_conf[0].remote_keypair_id }}"
             state: absent
-          loop: "{{ instance_conf }}"
+          when: instance_conf
 
         # Mandatory configuration for Molecule to function.
         - name: Populate instance config

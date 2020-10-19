@@ -7,33 +7,36 @@ platforms:
   - name: consul1
     region: fra1
     size: 2gb
-    image: ubuntu-20-04-x64
+    image: docker-20-04
     groups: [consul, consul_server]
   - name: consul2
     region: fra1
     size: 2gb
-    image: ubuntu-20-04-x64
+    image: docker-20-04
     groups: [consul, consul_server]
   - name: consul3
     region: fra1
     size: 2gb
-    image: ubuntu-20-04-x64
+    image: docker-20-04
     groups: [consul, consul_server]
   - name: consul4
     region: fra1
     size: 2gb
-    image: ubuntu-20-04-x64
+    image: docker-20-04
     groups: [consul]
   - name: consul5
     region: fra1
     size: 2gb
-    image: ubuntu-20-04-x64
+    image: docker-20-04
     groups: [consul]
 provisioner:
   name: ansible
   config_options:
     defaults:
       stdout_callback: yaml
+      host_key_checking: false
+      pipelining: true
+
   inventory:
     group_vars:
       consul:

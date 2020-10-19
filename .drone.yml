@@ -1,0 +1,44 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: restore-cache
+    image: drillster/drone-volume-cache
+    volumes:
+    - name: cache
+      path: /cache
+    settings:
+      restore: true
+      mount:
+        - /usr/local/lib/python3.9
+
+  - name: test
+    image: python:3.9
+    environment:
+      DO_API_TOKEN:
+        from_secret: DO_API_TOKEN
+      USER: root
+      ANSIBLE_FORCE_COLOR: '1'
+    commands:
+      - pip install -r requirements.txt
+      - ln -s $PWD /drone/ansible-role-consul
+      - molecule test
+      - black --check .
+      - isort --check-only .
+
+  - name: rebuild-cache
+    image: drillster/drone-volume-cache
+    volumes:
+    - name: cache
+      path: /cache
+    settings:
+      rebuild: true
+      mount:
+        - /usr/local/lib/python3.9
+
+volumes:
+  - name: cache
+    host:
+      path: /tmp/drone/cache

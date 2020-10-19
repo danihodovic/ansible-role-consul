@@ -1,0 +1,13 @@
+---
+- name: Allow consul ufw
+  community.general.ufw:
+    rule: allow
+    port: '"{{ item }}"'
+    from_ip: '{{ consul_network_range }}'
+    proto: any
+  loop:
+    - '{{ consul_dns_port }}'
+    - '{{ consul_lan_port }}'
+    - '{{ consul_wan_port }}'
+    - '{{ consul_http_port }}'
+    - '{{ consul_server_port }}'

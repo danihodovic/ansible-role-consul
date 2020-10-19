@@ -20,4 +20,4 @@ install:
 script:
   - black --check .
   - isort --check-only .
-  - MOLECULE_NO_LOG=false molecule test
+  - ANSIBLE_CONFIG=$PWD/ansible.cfg MOLECULE_NO_LOG=false molecule test

@@ -13,7 +13,7 @@
       rescue:
         - name: Populate instance config when file missing
           set_fact:
-            instance_conf: {}
+            instance_conf: [{}]
             skip_instances: true
 
     - name: Destroy molecule instance(s)

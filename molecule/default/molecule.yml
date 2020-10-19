@@ -34,6 +34,9 @@ provisioner:
   config_options:
     defaults:
       stdout_callback: yaml
+      host_key_checking: false
+      pipelining: true
+
   inventory:
     group_vars:
       consul:

@@ -5,6 +5,8 @@
 
 - include_tasks: dnsmasq.yml
 
+- include_tasks: open_ports.yml
+
 - include_tasks: start_containers.yml
 
 - include_tasks: check_status.yml

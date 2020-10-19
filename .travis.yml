@@ -19,5 +19,5 @@ install:
 
 script:
   - black --check .
-  - isort --check-only
-  - molecule test
+  - isort --check-only .
+  - MOLECULE_NO_LOG=false molecule test

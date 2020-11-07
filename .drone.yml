@@ -17,8 +17,11 @@ steps:
     commands:
       - pip install -r requirements.txt
       - ln -s $PWD /drone/ansible-role-consul
-      # - molecule test
-      - molecule converge || sleep 1000000
-      - molecule verify   || sleep 1000000
+      - molecule test
       - black --check .
       - isort --check-only .
+
+  - name: fail-on-debug-instruction
+    image: alpine
+    commands:
+      - grep '|| sleep' .drone.yml || exit 1

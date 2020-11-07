@@ -43,3 +43,17 @@ provisioner:
 verifier:
   name: testinfra
   directory: ../../tests
+scenario:
+  test_sequence:
+    - dependency
+    - lint
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    - side_effect
+    - verify
+    - cleanup
+    - destroy

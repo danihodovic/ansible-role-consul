@@ -1,6 +1,6 @@
 ![logo](./logo.png)
 
-# ansible-role-consul
+# ansible-role-consul [![Build Status](https://ci.depode.com/api/badges/danihodovic/ansible-role-consul/status.svg)](https://ci.depode.com/danihodovic/ansible-role-consul)
 
 Deploys a consul cluster as containers.
 

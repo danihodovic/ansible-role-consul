@@ -5,8 +5,6 @@
     - name: Include ansible-role-consul
       include_role:
         name: ansible-role-consul
-      vars:
-        consul_network_range: '10.114.0.0/16'
 
 - name: Deploy consul clients
   hosts: consul
@@ -14,8 +12,6 @@
     - name: Include ansible-role-consul
       include_role:
         name: ansible-role-consul
-      vars:
-        consul_network_range: '10.114.0.0/16'
 
 - name: Deploy echo service
   hosts: '{{ groups.consul | last }}'
@@ -36,3 +32,9 @@
           SERVICE_CHECK_HTTP: /
           SERVICE_CHECK_INTERVAL: 10s
           SERVICE_CHECK_TIMEOUT: 2s
+
+    - name: Allow everyone to connect to echo
+      community.general.ufw:
+        rule: allow
+        port: 13000
+        proto: any

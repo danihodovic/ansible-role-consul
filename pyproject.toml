@@ -1,0 +1,3 @@
+[tool.black]
+skip_numeric_underscore_normalization = true
+exclude = ".*(venv|virtualenv|migrations|node_modules|s3)"

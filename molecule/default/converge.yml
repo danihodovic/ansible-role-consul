@@ -36,5 +36,5 @@
     - name: Allow everyone to connect to echo
       community.general.ufw:
         rule: allow
-        port: 13000
+        port: '13000'
         proto: any

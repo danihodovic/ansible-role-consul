@@ -5,6 +5,15 @@
     path: '{{ consul_data_dir }}'
     mode: 0777
 
+- name: Pull consul
+  docker_image:
+    source: pull
+    name: '{{ consul_image }}'
+  register: consul_pull
+  until: consul_pull is not failed
+  retries: 3
+  delay: 5
+
 - name: Start consul
   docker_container:
     comparisons:

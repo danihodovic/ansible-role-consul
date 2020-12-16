@@ -41,6 +41,7 @@ provisioner:
     group_vars:
       all:
         consul_network_range: '10.114.0.0/16'
+        molecule_no_log: false
       consul:
 verifier:
   name: testinfra

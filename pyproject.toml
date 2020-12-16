@@ -8,5 +8,5 @@ multi_line_output = 3
 skip = '.virtualenv,.venv'
 
 [tool.pytest.ini_options]
-addopts = "--reruns=3 --reruns-delay=1"
+addopts = "--reruns=5 --reruns-delay=2"
 timeout = 3

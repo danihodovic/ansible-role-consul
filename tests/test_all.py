@@ -1,11 +1,12 @@
 import json
+import re
 
 import pytest
 
 
 def test_containers_running(host):
-    consul = host.docker("consul")
-    consul = host.docker("registrator")
+    assert host.docker("consul")
+    assert host.docker("registrator")
 
 
 def test_resolves_dns_on_host(host):
@@ -47,3 +48,15 @@ def test_cluster_health(host):
         assert check["Status"] == "passing"
         total += 1
     assert total == 5
+
+
+def test_consul_metrics(host):
+    if host.backend.get_hostname() != "consul1":
+        pytest.skip()
+    result = host.run("curl localhost:9107/metrics")
+    # pylint: disable=line-too-long
+    matches = re.findall(
+        r'consul_health_node_status{check="serfHealth",node=".*",status="passing"} 1',
+        result.stdout,
+    )
+    assert len(matches) == 5

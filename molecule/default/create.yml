@@ -19,6 +19,8 @@
         from_port: 8
         to_port: -1
         cidr_ip: '0.0.0.0/0'
+      - proto: all
+        cidr_ip: '172.0.0.0/8'
     security_group_rules_egress:
       - proto: -1
         from_port: 0
@@ -30,18 +32,16 @@
   tasks:
     - name: Find the vpc for the subnet
       ec2_vpc_subnet_info:
-        subnet_ids: "{{ item.vpc_subnet_id }}"
-      loop: "{{ molecule_yml.platforms }}"
+        subnet_ids: "{{ molecule_yml.platforms[0].vpc_subnet_id }}"
       register: subnet_info
 
     - name: Create security groups
       ec2_group:
-        vpc_id: "{{ item.subnets[0].vpc_id }}"
+        vpc_id: "{{ subnet_info.subnets[0].vpc_id }}"
         name: "{{ security_group_name }}"
         description: "{{ security_group_name }}"
         rules: "{{ security_group_rules }}"
         rules_egress: "{{ security_group_rules_egress }}"
-      loop: "{{ subnet_info.results }}"
 
     - name: Test for presence of local key pair
       stat:

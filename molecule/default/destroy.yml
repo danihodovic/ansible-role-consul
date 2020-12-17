@@ -26,6 +26,11 @@
       async: 7200
       poll: 0
 
+    - name: Destroy temporary ssh keys
+      ec2_key:
+        name: "{{ instance_conf[0].key_pair_name }}"
+      when: not skip_instances
+
     - name: Wait for instance(s) deletion to complete
       async_status:
         jid: "{{ item.ansible_job_id }}"

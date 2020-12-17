@@ -27,7 +27,6 @@
         to_port: 0
         cidr_ip: '0.0.0.0/0'
 
-    key_pair_name: molecule_key
     key_pair_path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/ssh_key"
   tasks:
     - name: Find the vpc for the subnet
@@ -43,16 +42,9 @@
         rules: "{{ security_group_rules }}"
         rules_egress: "{{ security_group_rules_egress }}"
 
-    - name: Test for presence of local key pair
-      stat:
-        path: "{{ key_pair_path }}"
-      register: key_pair_local
-
-    - name: Delete remote key pair
-      ec2_key:
-        name: "{{ key_pair_name }}"
-        state: absent
-      when: not key_pair_local.stat.exists
+    - name: Generate key name
+      set_fact:
+        key_pair_name: 'molecule_key_{{ 99999999 | random | to_uuid }}'
 
     - name: Create key pair
       ec2_key:
@@ -116,6 +108,7 @@
           'user': "{{ ssh_user }}",
           'port': "{{ ssh_port }}",
           'identity_file': "{{ key_pair_path }}",
+          'key_pair_name': '{{ key_pair_name }}',
           'instance_ids': "{{ item.instance_ids }}", }
       loop: "{{ ec2_jobs.results }}"
       register: instance_config_dict

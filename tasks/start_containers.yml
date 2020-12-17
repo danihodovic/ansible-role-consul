@@ -23,7 +23,8 @@
     restart_policy: unless-stopped
     memory: '{{ consul_memory }}'
     cpu_shares: '{{ consul_cpu }}'
-    hostname: '{{ consul_hostname|default(consul_ip) }}'
+    # Ensure node name has alphanumeric characters
+    hostname: '{{ consul_hostname|default(consul_ip)|replace(".", "-") }}'
     user: root
     command: >-
       agent

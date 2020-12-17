@@ -15,6 +15,6 @@
 - name: Allow containers to connect to host dnsmasq
   community.general.ufw:
     rule: allow
-    port: 53
+    port: '53'
     from_ip: 172.17.0.0/8
     proto: any

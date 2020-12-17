@@ -9,4 +9,8 @@
 
 - include_tasks: start_containers.yml
 
+- import_tasks: consul_exporter.yml
+  delegate_to: '{{ groups.consul_server |first }}'
+  run_once: true
+
 - include_tasks: check_status.yml

@@ -13,42 +13,40 @@
       rescue:
         - name: Populate instance config when file missing
           set_fact:
-            instance_conf: [{}]
+            instance_conf: {}
             skip_instances: true
 
-    - when: not skip_instances
-      block:
-        - name: Destroy molecule instance(s)
-          community.digitalocean.digital_ocean_droplet:
-            name: "{{ item.instance }}"
-            id: "{{ item.droplet_id }}"
-            state: absent
-          register: server
-          with_items: "{{ instance_conf }}"
-          async: 7200
-          poll: 0
+    - name: Destroy molecule instance(s)
+      amazon.aws.ec2:
+        state: absent
+        instance_ids: "{{ item.instance_ids }}"
+      register: server
+      with_items: "{{ instance_conf }}"
+      when: not skip_instances
+      async: 7200
+      poll: 0
 
-        - name: Wait for instance(s) deletion to complete
-          async_status:
-            jid: "{{ item.ansible_job_id }}"
-          register: digitalocean_jobs
-          until: digitalocean_jobs.finished
-          retries: 300
-          with_items: "{{ server.results }}"
+    - name: Destroy temporary ssh keys
+      ec2_key:
+        name: "{{ instance_conf[0].key_pair_name }}"
+      when: not skip_instances
 
-        - name: Delete remote keypair
-          community.digitalocean.digital_ocean_sshkey:
-            fingerprint: "{{ instance_conf[0].remote_keypair_id }}"
-            state: absent
-          when: instance_conf
+    - name: Wait for instance(s) deletion to complete
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
+      register: ec2_jobs
+      until: ec2_jobs.finished
+      retries: 300
+      with_items: "{{ server.results }}"
 
-        # Mandatory configuration for Molecule to function.
-        - name: Populate instance config
-          set_fact:
-            instance_conf: {}
+    # Mandatory configuration for Molecule to function.
 
-        - name: Dump instance config
-          copy:
-            content: "{{ instance_conf | to_yaml }}"
-            dest: "{{ molecule_instance_config }}"
-          when: server.changed | bool
+    - name: Populate instance config
+      set_fact:
+        instance_conf: {}
+
+    - name: Dump instance config
+      copy:
+        content: "{{ instance_conf | to_json | from_json | to_yaml }}"
+        dest: "{{ molecule_instance_config }}"
+      when: server.changed | bool

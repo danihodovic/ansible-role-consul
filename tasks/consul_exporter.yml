@@ -1,0 +1,32 @@
+---
+- name: Pull the container
+  docker_image:
+    source: pull
+    name: prom/consul-exporter
+    force: true
+  register: consul_pull
+  until: consul_pull is not failed
+  retries: 3
+  delay: 5
+
+- name: Start Consul exporter
+  docker_container:
+    comparisons:
+      '*': strict
+    image: prom/consul-exporter
+    name: consul-exporter
+    restart_policy: unless-stopped
+    memory: '{{ ansible_memory_mb.real.total * 0.1 }}m'
+    cpu_shares: '{{ (1024 * 0.1) | int }}'
+    network_mode: host
+    command: >-
+      --consul.server={{ consul_ip }}:{{ consul_http_port }}
+      --no-consul.allow_stale
+
+- name: Health check exporter
+  uri:
+    url: http://localhost:9107
+  register: consul_health_check_exporter
+  retries: 10
+  delay: 1
+  until: consul_health_check_exporter is not failed

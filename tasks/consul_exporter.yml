@@ -30,3 +30,10 @@
   retries: 10
   delay: 1
   until: consul_health_check_exporter is not failed
+
+- name: Add service to consul
+  consul:
+    service_name: consul-exporter
+    service_port: 9107
+    http: http://localhost:9107
+    interval: 15s

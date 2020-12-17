@@ -2,13 +2,13 @@
 dependency:
   name: galaxy
 driver:
-  name: digitalocean
+  name: ec2
 platforms:
   - &common
     name: consul1
-    region: fra1
-    size: 2gb
-    image: 75273731 # molecule-test-image
+    vpc_subnet_id: subnet-1efffb7b
+    image: ami-0c48db26521ca9f07
+    instance_type: m5.xlarge
     groups: [consul, consul_server]
   - <<: *common
     name: consul2
@@ -31,15 +31,16 @@ provisioner:
   inventory:
     group_vars:
       all:
-        consul_network_range: '10.114.0.0/16'
+        consul_network_range: '172.31.0.0/20'
         molecule_no_log: false
       consul:
+        ansible_become: true
 verifier:
   name: testinfra
   directory: ../../tests
   options:
-    reruns: 5
-    reruns-delay: 2
+    reruns: '3'
+    reruns-delay: '2'
 scenario:
   test_sequence:
     - dependency

@@ -4,10 +4,12 @@
     source: pull
     name: prom/consul-exporter
     force: true
+  register: consul_pull
+  until: consul_pull is not failed
+  retries: 3
+  delay: 5
 
 - name: Start Consul exporter
-  delegate_to: '{{ groups.consul_server |first }}'
-  run_once: true
   docker_container:
     comparisons:
       '*': strict
@@ -19,4 +21,12 @@
     network_mode: host
     command: >-
       --consul.server={{ consul_ip }}:{{ consul_http_port }}
-      --consul.allow_stale=false
+      --no-consul.allow_stale
+
+- name: Health check exporter
+  uri:
+    url: http://localhost:9107
+  register: consul_health_check_exporter
+  retries: 10
+  delay: 1
+  until: consul_health_check_exporter is not failed

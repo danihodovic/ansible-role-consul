@@ -1,6 +1,6 @@
 ---
 - name: Allow consul ufw
-  community.general.ufw:
+  ufw:
     rule: allow
     port: '"{{ item }}"'
     from_ip: '{{ consul_network_range }}'
@@ -13,7 +13,7 @@
     - '{{ consul_server_port }}'
 
 - name: Allow containers to connect to host dnsmasq
-  community.general.ufw:
+  ufw:
     rule: allow
     port: '53'
     from_ip: 172.17.0.0/8

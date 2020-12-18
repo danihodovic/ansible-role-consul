@@ -40,13 +40,21 @@
       -serf-lan-port={{ consul_lan_port }}
       -client 0.0.0.0
 
+      {% for ip in consul_retry_join_ips %}
+      -retry-join {{ ip }}
+      {% endfor %}
+
       {% if "consul_server" in group_names %}
       -server
       -bootstrap-expect {{ consul_num_servers }}
       {% endif %}
 
-      {% for ip in consul_retry_join_ips %}
-      -retry-join {{ ip }}
+      {% if "consul_node_name" != "" %}
+      -node={{ consul_node_name }}
+      {% endif %}
+
+      {% for key, value in consul_node_tags.items() %}
+      -node-meta={{ key }}:{{ value }}
       {% endfor %}
     env:
       CONSUL_ALLOW_PRIVILEGED_PORTS: 'true'

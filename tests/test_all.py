@@ -51,8 +51,6 @@ def test_cluster_health(host):
 
 
 def test_consul_metrics(host):
-    if host.backend.get_hostname() != "consul1":
-        pytest.skip()
     result = host.run("curl localhost:9107/metrics")
     # pylint: disable=line-too-long
     matches = re.findall(
@@ -60,3 +58,19 @@ def test_consul_metrics(host):
         result.stdout,
     )
     assert len(matches) == 5
+
+
+def test_consul_node_meta(host):
+    if host.backend.get_hostname() != "consul1":
+        pytest.skip()
+
+    result = host.run("curl http://localhost:8500/v1/catalog/nodes -s")
+    data = json.loads(result.stdout)
+    slavens_node = next((v for v in data if v["Node"] == "slaven_bilic_big_sam"), None)
+    assert slavens_node
+    assert slavens_node["Datacenter"] == "my_dc"
+    assert slavens_node["Meta"]["hello"] == "world"
+
+    joses_node = next((v for v in data if v["Node"] == "jose_mourinho"), None)
+    assert joses_node
+    assert joses_node["Meta"]["denis"] == "supak"

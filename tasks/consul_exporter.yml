@@ -21,7 +21,6 @@
     network_mode: host
     command: >-
       --consul.server={{ consul_ip }}:{{ consul_http_port }}
-      --no-consul.allow_stale
 
 - name: Health check exporter
   uri:

@@ -1,6 +1,8 @@
 ---
 - name: Deploy consul servers
   hosts: consul_server
+  vars:
+    ansible_become: true
   tasks:
     - name: Include ansible-role-consul
       include_role:
@@ -8,6 +10,8 @@
 
 - name: Deploy consul clients
   hosts: consul
+  vars:
+    ansible_become: true
   tasks:
     - name: Include ansible-role-consul
       include_role:
@@ -15,6 +19,8 @@
 
 - name: Deploy echo service
   hosts: '{{ groups.consul | last }}'
+  vars:
+    ansible_become: true
   tasks:
     - name: Deploy echo service
       run_once: true

@@ -34,8 +34,6 @@ provisioner:
         consul_network_range: '172.31.0.0/20'
         molecule_no_log: false
         consul_datacenter: my_dc
-      consul:
-        ansible_become: true
     host_vars:
       consul2:
         consul_node_name: slaven_bilic_big_sam

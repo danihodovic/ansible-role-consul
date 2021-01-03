@@ -15,13 +15,14 @@ def test_resolves_dns_on_host(host):
 
 
 def test_resolves_dns_within_container(host):
-    result = host.run(
-        (
-            "docker run --dns 172.17.0.1 curlimages/curl "
-            "http://echo.service.consul:13000"
+    with host.sudo():
+        result = host.run(
+            (
+                "docker run --dns 172.17.0.1 curlimages/curl "
+                "http://echo.service.consul:13000"
+            )
         )
-    )
-    assert result.stdout == "hello\n"
+        assert result.stdout == "hello\n"
 
 
 def test_registers_health_checks(host):

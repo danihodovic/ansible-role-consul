@@ -48,7 +48,6 @@ verifier:
   directory: ../../tests
   options:
     reruns: '3'
-    reruns-delay: '2'
 scenario:
   test_sequence:
     - dependency

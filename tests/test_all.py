@@ -5,13 +5,15 @@ import pytest
 
 
 def test_containers_running(host):
-    assert host.docker("consul")
-    assert host.docker("registrator")
+    with host.sudo():
+        assert host.docker("consul").is_running
+        assert host.docker("registrator").is_running
 
 
 def test_resolves_dns_on_host(host):
-    result = host.run("curl http://echo.service.consul:13000 -s")
-    assert result.stdout == "hello\n"
+    url = "http://echo.service.consul:13000"
+    res = host.ansible("uri", f"url={url} return_content=true", check=False)
+    assert res["content"] == "hello\n"
 
 
 def test_resolves_dns_within_container(host):
@@ -40,10 +42,11 @@ def test_cluster_health(host):
     if host.backend.get_hostname() != "consul1":
         pytest.skip()
 
-    result = host.run("curl consul.service.consul:8500/v1/health/state/any -s")
-    health_checks = json.loads(result.stdout)
+    url = "http://consul.service.consul:8500/v1/health/state/any"
+    res = host.ansible("uri", f"url={url} return_content=true", check=False)
+
     total = 0
-    for check in health_checks:
+    for check in res["json"]:
         if check["CheckID"] != "serfHealth":
             continue
         assert check["Status"] == "passing"
@@ -52,11 +55,13 @@ def test_cluster_health(host):
 
 
 def test_consul_metrics(host):
-    result = host.run("curl localhost:9107/metrics")
+    res = host.ansible(
+        "uri", "url=http://localhost:9107/metrics return_content=true", check=False
+    )
     # pylint: disable=line-too-long
     matches = re.findall(
         r'consul_health_node_status{check="serfHealth",node=".*",status="passing"} 1',
-        result.stdout,
+        res["content"],
     )
     assert len(matches) == 5
 
@@ -65,8 +70,10 @@ def test_consul_node_meta(host):
     if host.backend.get_hostname() != "consul1":
         pytest.skip()
 
-    result = host.run("curl http://localhost:8500/v1/catalog/nodes -s")
-    data = json.loads(result.stdout)
+    url = "http://localhost:8500/v1/catalog/nodes"
+    res = host.ansible("uri", f"url={url} return_content=true", check=False)
+    data = res["json"]
+
     slavens_node = next((v for v in data if v["Node"] == "slaven_bilic_big_sam"), None)
     assert slavens_node
     assert slavens_node["Datacenter"] == "my_dc"

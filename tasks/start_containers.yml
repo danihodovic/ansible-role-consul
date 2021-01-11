@@ -39,6 +39,7 @@
       -serf-wan-port {{ consul_wan_port }}
       -serf-lan-port={{ consul_lan_port }}
       -client 0.0.0.0
+      -enable-script-checks
 
       {% for ip in consul_retry_join_ips %}
       -retry-join {{ ip }}

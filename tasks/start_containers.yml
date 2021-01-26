@@ -63,17 +63,3 @@
     network_mode: host
     volumes:
       - '{{ consul_data_dir }}:{{ consul_data_dir }}'
-
-- name: Start registrator
-  docker_container:
-    comparisons:
-      '*': strict
-    image: gliderlabs/registrator:latest
-    name: registrator
-    restart_policy: unless-stopped
-    network_mode: host
-    command: >-
-      -ip {{ consul_ip }}
-      consul://{{ consul_ip }}:{{ consul_http_port }}
-    volumes:
-      - '/var/run/docker.sock:/tmp/docker.sock'

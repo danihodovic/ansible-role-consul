@@ -12,8 +12,6 @@ Deploys a consul cluster as containers.
     DNS queries to public or pre-configured nameservers. Configurable in [defaults.yml](./defaults/main.yml).
 - Resolves DNS queries on the host machine for .consul domains. Falls back to public DNS servers by default.
 - Resolves DNS queries from within docker containers (specify `--dns=172.17.0.1`) See below.
-- Deploys [registrator](https://github.com/gliderlabs/registrator) on every host to automatically register healthy Docker
-    containers in consul.
 - Disables systemd-resolved in favor of dnsmasq.
 - Tested on a 5 node DigitalOcean cluster using Molecule and Testinfra.
 
@@ -86,27 +84,4 @@ Specify the DNS server as the host IP when starting the container
 
 ```sh
 docker run --dns 172.17.0.1 curlimages/curl "http://echo.service.consul:13000"
-```
-
-##### Automatic registration and health checks with registrator
-
-In order for a container to be registered it needs to have **at least one
-published port**.
-
-Use docker labels to specify a service name and health checks.
-
-```sh
-docker run \
-    -p 13000:5678 \
-    -l SERVICE_NAME=echo \
-    -l SERVICE_CHECK_HTTP=/ \
-    -l SERVICE_CHECK_INTERVAL=10s \
-    hashicorp/http-echo -text hello
-```
-
-The above service will then be available as
-
-```sh
-curl echo.service.consul:13000 -s
-hello
 ```

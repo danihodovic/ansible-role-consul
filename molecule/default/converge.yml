@@ -33,11 +33,13 @@
         published_ports:
           - '13000:5678'
         command: -text hello
-        labels:
-          SERVICE_NAME: echo
-          SERVICE_CHECK_HTTP: /
-          SERVICE_CHECK_INTERVAL: 10s
-          SERVICE_CHECK_TIMEOUT: 2s
+
+    - name: Register echo service
+      community.general.consul:
+        service_name: echo
+        service_port: '13000'
+        http: http://localhost:13000/
+        interval: 5s
 
     - name: Allow everyone to connect to echo
       community.general.ufw:

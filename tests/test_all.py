@@ -7,7 +7,6 @@ import pytest
 def test_containers_running(host):
     with host.sudo():
         assert host.docker("consul").is_running
-        assert host.docker("registrator").is_running
 
 
 def test_resolves_dns_on_host(host):

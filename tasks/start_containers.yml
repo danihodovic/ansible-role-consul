@@ -63,3 +63,10 @@
     network_mode: host
     volumes:
       - '{{ consul_data_dir }}:{{ consul_data_dir }}'
+
+- name: Register consul web
+  community.general.consul:
+    service_name: consul-web
+    service_port: '{{ consul_http_port }}'
+    http: 'http://localhost:{{ consul_http_port }}/ui/'
+    interval: 60s

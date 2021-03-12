@@ -81,3 +81,8 @@ def test_consul_node_meta(host):
     joses_node = next((v for v in data if v["Node"] == "jose_mourinho"), None)
     assert joses_node
     assert joses_node["Meta"]["denis"] == "supak"
+
+
+def test_consul_web(host):
+    url = "http://consul-web.service.consul"
+    host.ansible("uri", f"url={url} return_content=true", check=False)

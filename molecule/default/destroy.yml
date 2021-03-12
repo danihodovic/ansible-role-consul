@@ -29,7 +29,7 @@
     - name: Destroy temporary ssh keys
       ec2_key:
         name: "{{ instance_conf[0].key_pair_name }}"
-      when: not skip_instances
+      when: not skip_instances and instance_conf
 
     - name: Wait for instance(s) deletion to complete
       async_status:

@@ -1,5 +1,4 @@
 ---
-# TODO: Create config dir
 - name: Assert that we have either the network interface or a range
   assert:
     that:
@@ -30,3 +29,6 @@
 - name: Get consul IP
   set_fact:
     consul_ip: '{{ ansible_all_ipv4_addresses | ipaddr(consul_network_range) | max }}'
+
+- set_fact:
+    consul_config: '{{ consul_config_defaults | combine(consul_config)}}'

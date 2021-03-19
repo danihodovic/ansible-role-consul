@@ -50,6 +50,6 @@
 - name: Register consul web
   community.general.consul:
     service_name: consul-web
-    service_port: '{{ consul_http_port }}'
-    http: 'http://localhost:{{ consul_http_port }}/ui/'
+    service_port: '{{ consul_config.ports.http }}'
+    http: 'http://localhost:{{ consul_config.ports.http }}/ui/'
     interval: 60s

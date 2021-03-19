@@ -6,11 +6,11 @@
     from_ip: '{{ consul_network_range }}'
     proto: any
   loop:
-    - '{{ consul_dns_port }}'
-    - '{{ consul_lan_port }}'
-    - '{{ consul_wan_port }}'
-    - '{{ consul_http_port }}'
-    - '{{ consul_server_port }}'
+    - '{{ consul_config.ports.dns }}'
+    - '{{ consul_config.ports.serf_lan }}'
+    - '{{ consul_config.ports.serf_wan }}'
+    - '{{ consul_config.ports.http }}'
+    - '{{ consul_config.ports.server }}'
 
 - name: Allow containers to connect to host dnsmasq
   ufw:

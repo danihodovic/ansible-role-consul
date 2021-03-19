@@ -25,6 +25,6 @@ consul_dnsmasq_listen_address:
   # 172.17.0.1 is the default host IP from within the container. This
   # ensures dnsmasq can resolve dns queries from inside containers
   - '172.17.0.1'
-consul_memory: '{{ ansible_memory_mb.real.total * 0.1 }}m'
-consul_cpu: '{{ (1024 * 0.1) | int }}'
+consul_memory: '4096m'
+consul_cpu: '{{ 1024 * 2 | int }}'
 consul_retry_join_ips: []

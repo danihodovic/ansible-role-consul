@@ -40,6 +40,7 @@
       -serf-lan-port={{ consul_lan_port }}
       -client 0.0.0.0
       -enable-script-checks
+      -discovery_max_stale=30
 
       {% for ip in consul_retry_join_ips %}
       -retry-join {{ ip }}

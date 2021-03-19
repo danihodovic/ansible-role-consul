@@ -7,6 +7,8 @@
 
 - include_tasks: open_ports.yml
 
+- include_tasks: write_config.yml
+
 - include_tasks: start_containers.yml
 
 - import_tasks: consul_exporter.yml

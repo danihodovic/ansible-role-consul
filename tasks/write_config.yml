@@ -1,0 +1,10 @@
+---
+- name: Create consul config dir
+  file:
+    state: directory
+    path: '{{ consul_dir }}'
+
+- name: Write config file
+  copy:
+    content: '{{ consul_config | to_nice_json }}'
+    dest: '{{ consul_dir }}/config.json'

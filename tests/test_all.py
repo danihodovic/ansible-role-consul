@@ -1,7 +1,21 @@
+# pylint: disable=invalid-name,redefined-outer-name
 import json
 import re
 
 import pytest
+import requests
+from testinfra.host import Host
+
+
+@pytest.fixture(scope="session")
+def target_host(request):
+    def fn(host, sudo=True):
+        return Host.get_host(
+            f"ansible://{host}?ansible_inventory={request.config.option.ansible_inventory}",
+            sudo=sudo,
+        )
+
+    return fn
 
 
 def test_containers_running(host):
@@ -65,10 +79,8 @@ def test_consul_metrics(host):
     assert len(matches) == 5
 
 
-def test_consul_node_meta(host):
-    if host.backend.get_hostname() != "consul1":
-        pytest.skip()
-
+def test_consul_node_meta(target_host):
+    host = target_host("consul1")
     url = "http://localhost:8500/v1/catalog/nodes"
     res = host.ansible("uri", f"url={url} return_content=true", check=False)
     data = res["json"]
@@ -86,3 +98,11 @@ def test_consul_node_meta(host):
 def test_consul_web(host):
     url = "http://consul-web.service.consul"
     host.ansible("uri", f"url={url} return_content=true", check=False)
+
+
+def test_not_internet_reachable(target_host):
+    host = target_host("consul1")
+    ipify_facts = host.ansible("community.general.ipify_facts")
+    public_ip = ipify_facts["ansible_facts"]["ipify_public_ip"]
+    with pytest.raises(requests.exceptions.ConnectTimeout):
+        requests.get(f"http://{public_ip}:8500/v1/agent/members", timeout=10)

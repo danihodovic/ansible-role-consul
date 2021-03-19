@@ -20,6 +20,7 @@
       '*': strict
     image: '{{ consul_image }}'
     name: '{{ consul_container_name }}'
+    restart: true
     restart_policy: unless-stopped
     memory: '{{ consul_memory }}'
     cpu_shares: '{{ consul_cpu }}'
@@ -28,20 +29,9 @@
     user: root
     command: >-
       agent
-      -ui
+      -config-dir={{ consul_dir }}
       -bind {{ consul_ip }}
-      -data-dir {{ consul_data_dir }}
-      -datacenter {{ consul_datacenter }}
-      -recursor {{ consul_recursor }}
-      -dns-port {{ consul_dns_port }}
-      -http-port {{ consul_http_port }}
-      -server-port {{ consul_server_port }}
-      -serf-wan-port {{ consul_wan_port }}
-      -serf-lan-port={{ consul_lan_port }}
-      -client 0.0.0.0
-      -enable-script-checks
-      -discovery_max_stale=30
-
+      -client='{{ consul_ip }} 127.0.0.1'
       {% for ip in consul_retry_join_ips %}
       -retry-join {{ ip }}
       {% endfor %}
@@ -50,14 +40,6 @@
       -server
       -bootstrap-expect {{ consul_num_servers }}
       {% endif %}
-
-      {% if "consul_node_name" != "" %}
-      -node={{ consul_node_name }}
-      {% endif %}
-
-      {% for key, value in consul_node_tags.items() %}
-      -node-meta={{ key }}:{{ value }}
-      {% endfor %}
     env:
       CONSUL_ALLOW_PRIVILEGED_PORTS: 'true'
       CONSUL_DISABLE_PERM_MGMT: 'true'

@@ -1,9 +1,10 @@
 ---
+consul_dir: /opt/consul
 consul_image: consul:latest
 consul_container_name: consul
 consul_data_dir: '/opt/consul'
 consul_datacenter: dc-1
-consul_node_name: ''
+consul_node_name: '{{ inventory_hostname }}'
 consul_node_tags: {}
 consul_recursor: 1.1.1.1
 consul_dns_port: 8600
@@ -28,3 +29,19 @@ consul_dnsmasq_listen_address:
 consul_memory: '4096m'
 consul_cpu: '{{ 1024 * 2 | int }}'
 consul_retry_join_ips: []
+consul_config:
+  data_dir: '{{ consul_dir }}/data'
+  ports:
+    dns: 8600
+    server: 8300
+    http: 8500
+    https: -1
+    serf_lan: 8301
+    serf_wan: 8302
+  discovery_max_stale: '30s'
+  enable_script_checks: true
+  recursors: [1.1.1.1, 8.8.8.8]
+  ui: true
+  datacenter: '{{ consul_datacenter }}'
+  node_name: '{{ consul_node_name }}'
+  node_meta: '{{ consul_node_tags }}'

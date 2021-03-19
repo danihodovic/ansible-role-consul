@@ -1,7 +1,7 @@
 ---
 - name: Health check consul
   uri:
-    url: 'http://localhost:{{ consul_http_port }}/v1/health/state/:state'
+    url: 'http://localhost:{{ consul_config.ports.http }}/v1/health/state/:state'
     status_code: 200
     timeout: 5
     return_content: true
@@ -14,7 +14,7 @@
   block:
     - name: Get raft members
       uri:
-        url: 'http://localhost:{{ consul_http_port }}/v1/status/peers'
+        url: 'http://localhost:{{ consul_config.ports.http }}/v1/status/peers'
         status_code: 200
         timeout: 5
         return_content: true
@@ -23,4 +23,4 @@
     - name: Assert server in raft peers
       assert:
         that:
-          - "'{{ consul_ip }}:{{ consul_server_port }}' in consul_peers.json"
+          - "'{{ consul_ip }}:{{ consul_config.ports.server }}' in consul_peers.json"

@@ -6,14 +6,8 @@ consul_data_dir: '/opt/consul'
 consul_datacenter: dc-1
 consul_node_name: '{{ inventory_hostname }}'
 consul_node_tags: {}
-consul_recursor: 1.1.1.1
-consul_dns_port: 8600
-consul_lan_port: 8301
-consul_wan_port: 8302
-consul_http_port: 8500
-consul_server_port: 8300
 consul_dnsmasq_nameservers:
-  - '/consul/127.0.0.1#{{ consul_dns_port }}'
+  - '/consul/127.0.0.1#{{ consul_config.ports.dns }}'
   # Public (Cloudflare, Google)
   - '1.1.1.1'
   - '1.0.0.1'
@@ -29,7 +23,8 @@ consul_dnsmasq_listen_address:
 consul_memory: '4096m'
 consul_cpu: '{{ 1024 * 2 | int }}'
 consul_retry_join_ips: []
-consul_config:
+consul_config: {}
+consul_config_defaults:
   data_dir: '{{ consul_dir }}/data'
   ports:
     dns: 8600

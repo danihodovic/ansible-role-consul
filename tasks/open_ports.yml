@@ -12,7 +12,7 @@
     - '{{ consul_config.ports.http }}'
     - '{{ consul_config.ports.server }}'
 
-- name: Allow containers to connect to host dnsmasq
+- name: Allow containers to connect to host dns
   ufw:
     rule: allow
     port: '53'

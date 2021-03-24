@@ -1,0 +1,26 @@
+---
+- name: Configure systemd-resolved
+  blockinfile:
+    path: /etc/systemd/resolved.conf
+    insertafter: "[Resolve]"
+    block: |
+      DNS=127.0.0.1
+      Domains=~consul
+
+- name: Configure iptables rules
+  ansible.builtin.iptables:
+    table: nat
+    chain: OUTPUT
+    destination: localhost
+    destination_port: "53"
+    to_ports: "8600"
+    match: "{{ item }}"
+    protocol: "{{ item }}"
+    jump: REDIRECT
+  loop: [tcp, udp]
+
+- name: Restart systemd-resolved
+  systemd:
+    name: systemd-resolved
+    state: restarted
+    enabled: true

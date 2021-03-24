@@ -33,7 +33,7 @@ def test_resolves_dns_within_container(host):
     with host.sudo():
         result = host.run(
             (
-                "docker run --dns 172.17.0.1 curlimages/curl "
+                "docker run --net=container:consul curlimages/curl "
                 "http://echo.service.consul:13000"
             )
         )

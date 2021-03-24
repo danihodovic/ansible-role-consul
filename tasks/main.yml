@@ -3,7 +3,7 @@
 
 - include_tasks: install_dependencies.yml
 
-- include_tasks: dnsmasq.yml
+- include_tasks: systemd_resolved.yml
 
 - include_tasks: open_ports.yml
 

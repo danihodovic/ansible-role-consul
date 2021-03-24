@@ -6,20 +6,6 @@ consul_data_dir: '/opt/consul'
 consul_datacenter: dc-1
 consul_node_name: '{{ inventory_hostname }}'
 consul_node_tags: {}
-consul_dnsmasq_nameservers:
-  - '/consul/127.0.0.1#{{ consul_config.ports.dns }}'
-  # Public (Cloudflare, Google)
-  - '1.1.1.1'
-  - '1.0.0.1'
-  - '8.8.8.8'
-consul_dnsmasq_listen_address:
-  # Default host DNS
-  - '::1'
-  - '127.0.0.1'
-  - '127.0.0.53'
-  # 172.17.0.1 is the default host IP from within the container. This
-  # ensures dnsmasq can resolve dns queries from inside containers
-  - '172.17.0.1'
 consul_memory: '4096m'
 consul_cpu: '{{ 1024 * 2 | int }}'
 consul_retry_join_ips: []

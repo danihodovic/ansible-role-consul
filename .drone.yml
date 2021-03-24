@@ -6,7 +6,7 @@ name: default
 volumes:
   - name: cache
     host:
-      path: /tmp/cache-ansible-role-drone
+      path: /tmp/cache/ansible-role-consul
 
 workspace:
   path: ${DRONE_REPO_NAME}

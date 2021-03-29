@@ -48,6 +48,7 @@
       - '{{ consul_data_dir }}:{{ consul_data_dir }}'
 
 - name: Register consul web
+  when: consul_config.ui
   community.general.consul:
     service_name: consul-web
     service_port: '{{ consul_config.ports.http }}'

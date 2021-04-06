@@ -26,3 +26,5 @@ consul_config_defaults:
   datacenter: '{{ consul_datacenter }}'
   node_name: '{{ consul_node_name }}'
   node_meta: '{{ consul_node_tags }}'
+systemd_resolved_fallback_dns: >-
+  FallbackDNS=8.8.8.8 8.8.4.4 1.1.1.1 2001:4860:4860::8888 2001:4860:4860::8844

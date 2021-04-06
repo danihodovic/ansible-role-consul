@@ -8,6 +8,7 @@
 - name: Pull consul
   docker_image:
     source: pull
+    force_source: true
     name: '{{ consul_image }}'
   register: consul_pull
   until: consul_pull is not failed

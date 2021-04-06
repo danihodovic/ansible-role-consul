@@ -8,6 +8,7 @@
 - name: Pull consul
   docker_image:
     source: pull
+    force_source: true
     name: '{{ consul_image }}'
   register: consul_pull
   until: consul_pull is not failed
@@ -18,38 +19,11 @@
   shell: docker exec consul consul leave
   failed_when: false
 
-- name: Start consul
-  docker_container:
-    comparisons:
-      '*': strict
-    image: '{{ consul_image }}'
-    name: '{{ consul_container_name }}'
-    restart: true
-    restart_policy: unless-stopped
-    memory: '{{ consul_memory }}'
-    cpu_shares: '{{ consul_cpu }}'
-    # Ensure node name has alphanumeric characters
-    hostname: '{{ consul_hostname|default(consul_ip)|replace(".", "-") }}'
-    user: root
-    command: >-
-      agent
-      -config-dir={{ consul_dir }}
-      -bind {{ consul_ip }}
-      -client='{{ consul_ip }} 127.0.0.1'
-      {% for ip in consul_retry_join_ips %}
-      -retry-join {{ ip }}
-      {% endfor %}
+- set_fact:
+    consul_docker_container: '{{ consul_docker_container_defaults | combine(consul_docker_container)}}'
 
-      {% if "consul_server" in group_names %}
-      -server
-      -bootstrap-expect {{ consul_num_servers }}
-      {% endif %}
-    env:
-      CONSUL_ALLOW_PRIVILEGED_PORTS: 'true'
-      CONSUL_DISABLE_PERM_MGMT: 'true'
-    network_mode: host
-    volumes:
-      - '{{ consul_data_dir }}:{{ consul_data_dir }}'
+- name: Start consul
+  docker_container: '{{ consul_docker_container }}'
 
 - name: Register consul web
   when: consul_config.ui

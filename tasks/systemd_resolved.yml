@@ -6,6 +6,13 @@
     block: |
       DNS=127.0.0.1
       Domains=~consul
+      FallbackDNS={{ systemd_resolved_fallback_dns }}
+
+- name: Add our local dns server to /etc/resolvconf/resolv.conf.d/
+  lineinfile:
+    path: /etc/resolvconf/resolv.conf.d/head
+    line: nameserver 127.0.0.1
+    create: true
 
 - name: Configure iptables rules
   ansible.builtin.iptables:

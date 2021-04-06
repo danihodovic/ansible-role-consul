@@ -14,6 +14,10 @@
   retries: 3
   delay: 5
 
+- name: Ensure any prior nodes leave the cluster gracefully
+  shell: docker exec consul consul leave
+  failed_when: false
+
 - name: Start consul
   docker_container:
     comparisons:

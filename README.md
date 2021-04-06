@@ -9,7 +9,6 @@ Deploys a consul cluster as containers.
 - Deploys a consul cluster of servers and clients.
 - Resolves DNS queries on the host machine for .consul domains. Falls back to public DNS servers by default.
 - Resolves DNS queries from within docker containers (specify `--dns=172.17.0.1`) See below.
-- Disables systemd-resolved in favor of dnsmasq.
 - Tested on a 5 node DigitalOcean cluster using Molecule and Testinfra.
 
 #### Drawbacks

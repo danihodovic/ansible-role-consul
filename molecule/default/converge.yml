@@ -30,16 +30,12 @@
         image: hashicorp/http-echo
         name: echo
         restart_policy: unless-stopped
+        labels:
+          CONSUL_SERVICE_NAME: 'echo'
+          CONSUL_SERVICE_PORT: '13000'
         published_ports:
           - '13000:5678'
         command: -text hello
-
-    - name: Register echo service
-      community.general.consul:
-        service_name: echo
-        service_port: '13000'
-        http: http://localhost:13000/
-        interval: 5s
 
     - name: Allow everyone to connect to echo
       community.general.ufw:

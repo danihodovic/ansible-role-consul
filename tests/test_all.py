@@ -40,17 +40,6 @@ def test_resolves_dns_within_container(host):
         assert result.stdout == "hello\n"
 
 
-def test_registers_health_checks(host):
-    if host.backend.get_hostname() != "consul1":
-        pytest.skip()
-
-    result = host.run("curl echo.service.consul:8500/v1/health/checks/echo -s")
-    health_checks = json.loads(result.stdout)
-    assert len(health_checks) == 1
-    health_check = health_checks[0]
-    assert health_check["Status"] == "passing"
-
-
 def test_cluster_health(host):
     if host.backend.get_hostname() != "consul1":
         pytest.skip()

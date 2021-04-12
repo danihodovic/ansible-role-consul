@@ -32,3 +32,22 @@
     service_port: '{{ consul_config.ports.http }}'
     http: 'http://localhost:{{ consul_config.ports.http }}/ui/'
     interval: 60s
+
+- when: consul_run_docker_autosync
+  block:
+    - set_fact:
+        consul_docker_autosync_container: >
+          {{ consul_docker_autosync_container_defaults | combine(consul_docker_autosync_container )}}
+
+    - name: Pull container
+      docker_image:
+        source: pull
+        force_source: true
+        name: '{{ consul_docker_autosync_container.image }}'
+      register: _result
+      until: _result is not failed
+      retries: 3
+      delay: 5
+
+    - name: Start docker autosync
+      docker_container: '{{ consul_docker_autosync_container }}'

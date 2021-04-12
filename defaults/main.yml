@@ -9,6 +9,7 @@ consul_node_tags: {}
 consul_memory: '4096m'
 consul_cpu: '{{ 1024 * 2 | int }}'
 consul_retry_join_ips: []
+consul_run_docker_autosync: false
 consul_config: {}
 consul_config_defaults:
   data_dir: '{{ consul_dir }}/data'
@@ -61,3 +62,14 @@ consul_docker_container_defaults:
   network_mode: host
   volumes:
     - '{{ consul_data_dir }}:{{ consul_data_dir }}'
+
+consul_docker_autosync_container: {}
+consul_docker_autosync_container_defaults:
+  comparisons:
+    '*': strict
+  image: danihodovic/consul-docker-autosync
+  name: consul-docker-autosync
+  restart_policy: unless-stopped
+  network_mode: host
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock

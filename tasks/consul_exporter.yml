@@ -1,5 +1,5 @@
 ---
-- name: Pull the container
+- name: Pull consul-exporter image
   docker_image:
     source: pull
     name: prom/consul-exporter

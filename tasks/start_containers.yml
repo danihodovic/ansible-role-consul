@@ -39,7 +39,7 @@
         consul_docker_autosync_container: >
           {{ consul_docker_autosync_container_defaults | combine(consul_docker_autosync_container )}}
 
-    - name: Pull container
+    - name: Pull consul-docker-autosync
       docker_image:
         source: pull
         force_source: true

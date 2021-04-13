@@ -10,6 +10,7 @@ consul_memory: '4096m'
 consul_cpu: '{{ 1024 * 2 | int }}'
 consul_retry_join_ips: []
 consul_run_docker_autosync: false
+consul_configure_ufw: true
 consul_config: {}
 consul_config_defaults:
   data_dir: '{{ consul_dir }}/data'

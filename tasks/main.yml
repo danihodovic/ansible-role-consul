@@ -6,6 +6,7 @@
 - include_tasks: systemd_resolved.yml
 
 - include_tasks: open_ports.yml
+  when: consul_configure_ufw
 
 - include_tasks: write_config.yml
 
